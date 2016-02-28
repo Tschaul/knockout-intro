@@ -1,0 +1,24 @@
+{
+  "name": "knockout-intro",
+  "version": "0.0.0",
+  "description": "Knockout Introduction",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tschaul/knockout-intro.git"
+  },
+  "keywords": [
+    "knockout"
+  ],
+  "author": "Julian Steinwachs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tschaul/knockout-intro/issues"
+  },
+  "dependencies": {
+    "knockout": "^3.4.0"
+  }
+}

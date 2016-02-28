@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titel</title>
+    <link rel="stylesheet" type="text/css" href="common/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="common/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="common/paper-theme.css">
+    <script type='text/javascript' src='common/knockout-3.4.0.js'></script>
+    <script type='text/javascript' src='common/knockout-mapping.js'></script>
+    <script>
+      
+      var todoData = {
+        name: "Einkaufsliste",
+        items: [
+          {
+            name: "Milch",
+            checked: false,
+          },
+          {
+            name: "Mehl",
+            checked: false,
+          },
+          {
+            name: "Butter",
+            checked: false,
+          },
+          {
+            name: "Eier",
+            checked: false,
+          }
+        ]
+      }
+      
+      var TodoViewModel = function(data){
+        
+        var self = this;
+        
+        ko.mapping.fromJS(data,{
+          
+          "items":{
+            create: function(options){
+              return new TodoItemViewModel(self,options.data);
+            }
+          }
+          
+        },self);
+        
+        self.addItem = function(){
+          
+          self.items.push(new TodoItemViewModel(self,{name:self.newItemName(),checked:false}));
+          self.newItemName("");
+        }
+        
+        self.removeItem = function(name){
+          self.items.remove(function(item){
+            return item.name()==name;
+          })
+        }
+        
+        self.uncheckedCount = ko.computed(function(){
+          return (self.items().filter(function(item){
+            return !item.checked()
+          })).length
+        })
+        
+        self.newItemName = ko.observable("");
+        
+        
+      }
+      
+      var TodoItemViewModel = function(parent,itemData){
+        
+        var self = this;
+        
+        ko.mapping.fromJS(itemData,{},self);
+        
+        self.toggleChecked = function(){
+          
+          self.checked(!self.checked());
+          
+        }
+        
+        self.remove = function(){
+          
+          parent.removeItem(self.name());
+          
+        }
+                
+      }
+      
+    </script>
+    <style>
+      
+      .checked {
+        
+        text-decoration: line-through;
+        
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="badge" data-bind="text: uncheckedCount"></span>
+        <span data-bind="text: name"></span>
+      </div>
+      <ul class="list-group" data-bind="foreach: items">
+        <li class="list-group-item" data-bind="text: name, css: {checked: checked}, click: toggleChecked"></li>
+      </ul>
+      <div class="input-group">
+        <input class="form-control" data-bind="value: newItemName"/>
+        <div class="input-group-btn">
+        
+        <button class="btn btn-default" data-bind="click: addItem">Add Item</button></div>
+      </div>
+    </div>
+    
+  </body>
+  <script>
+  
+      var vm = new TodoViewModel(todoData);
+      
+      ko.applyBindings(vm);
+    
+  </script>
+</html>

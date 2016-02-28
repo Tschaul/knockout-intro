@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titel</title>
+    <link rel="stylesheet" type="text/css" href="common/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="common/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="common/paper-theme.css">
+    <script type='text/javascript' src='common/knockout-3.4.0.js'></script>
+    <script>
+      
+      var todoData = {
+        name: "Einkaufsliste",
+        items: [
+          {
+            name: "Milch",
+            checked: false,
+          },
+          {
+            name: "Mehl",
+            checked: false,
+          },
+          {
+            name: "Butter",
+            checked: false,
+          },
+          {
+            name: "Eier",
+            checked: false,
+          }
+        ]
+      }
+      
+      var TodoViewModel = function(data){
+        
+        var self = this;
+        
+        self.name = ko.observable(data.name);
+        
+        self.items = ko.observableArray(data.items.map(function(itemData){
+          return new TodoItemViewModel(self,itemData);
+        }))
+        
+        self.uncheckedCount = ko.computed(function(){
+          return (self.items().filter(function(item){
+            return !item.checked()
+          })).length
+        })
+        
+        self.addItem = function(name){
+          
+          self.items.push(new TodoItemViewModel(self,{name:name,checked:false}));
+          
+        }
+        
+        self.removeItem = function(name){
+          self.items.remove(function(item){
+            return item.name()==name;
+          })
+        }
+        
+      }
+      
+      var TodoItemViewModel = function(parent,itemData){
+        
+        var self = this;
+        
+        self.name = ko.observable(itemData.name);
+        self.checked = ko.observable(itemData.checked);
+        
+        self.toggleChecked = function(){
+          
+          self.checked(!self.checked());
+          
+        }
+        
+        self.remove = function(){
+          
+          parent.removeItem(self.name());
+          
+        }
+                
+      }
+      
+      
+      var vm = new TodoViewModel(todoData);
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
